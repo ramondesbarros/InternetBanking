@@ -1,0 +1,21 @@
+2023-06-09 14:08:30 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "NOME VARCHAR(40)": "'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa... (133)"; SQL statement:
+insert into cliente (id, data_de_nascimento, nome, numero_da_conta, plano_exclusive, saldo) values (null, ?, ?, ?, ?, ?) [22001-200]
+2023-06-09 14:23:18 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "NOME VARCHAR(40)": "'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa... (133)"; SQL statement:
+insert into cliente (id, data_de_nascimento, nome, numero_da_conta, plano_exclusive, saldo) values (null, ?, ?, ?, ?, ?) [22001-200]
+2023-06-09 14:24:08 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "NOME VARCHAR(40)": "'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa... (133)"; SQL statement:
+insert into cliente (id, data_de_nascimento, nome, numero_da_conta, plano_exclusive, saldo) values (null, ?, ?, ?, ?, ?) [22001-200]
+2023-06-09 14:25:55 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "NOME VARCHAR(40)": "'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' (116)"; SQL statement:
+insert into cliente (id, data_de_nascimento, nome, numero_da_conta, plano_exclusive, saldo) values (null, ?, ?, ?, ?, ?) [22001-200]
+2023-06-09 14:26:23 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "NOME VARCHAR(40)": "'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' (116)"; SQL statement:
+insert into cliente (id, data_de_nascimento, nome, numero_da_conta, plano_exclusive, saldo) values (null, ?, ?, ?, ?, ?) [22001-200]
+2023-06-09 14:36:00 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "NOME VARCHAR(40)": "'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' (116)"; SQL statement:
+insert into cliente (id, data_de_nascimento, nome, numero_da_conta, plano_exclusive, saldo) values (null, ?, ?, ?, ?, ?) [22001-200]
+2023-06-09 14:36:51 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLDataException: Value too long for column "NOME VARCHAR(40)": "'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa' (116)"; SQL statement:
+insert into cliente (id, data_de_nascimento, nome, numero_da_conta, plano_exclusive, saldo) values (null, ?, ?, ?, ?, ?) [22001-200]
