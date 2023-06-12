@@ -4,18 +4,20 @@ import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 
-import br.com.internetbanking.dto.Cliente;
+import br.com.internetbanking.dto.ClienteDTO;
+import br.com.internetbanking.dto.DepositoBancario;
 import br.com.internetbanking.dto.HistoricoTransacaoDTO;
+import br.com.internetbanking.dto.SaqueConta;
 
 public interface ClienteService {
 
-	void cadastrarCliente(Cliente cliente);
+	void cadastrarCliente(ClienteDTO cliente);
 
-	void depositarUmValor(BigDecimal valorDeposito, String numeroDaConta);
+	void depositarUmValor(DepositoBancario depositoBancario, String numeroDaConta);
 
-	List<Cliente> retornarTodosClientesCadastrados();
+	List<ClienteDTO> retornarTodosClientesCadastrados();
 
-	BigDecimal sacarValor(BigDecimal valorDeSaque, String numeroDaConta);
+	BigDecimal sacarValor(SaqueConta saqueConta, String numeroDaConta);
 	
 	List<HistoricoTransacaoDTO> consultarHistoricoTransacoesMovimentacaoPorData(
 			BigDecimal valorDeSaque, 
