@@ -11,17 +11,22 @@ import br.com.internetbanking.dto.ClienteDTO;
 import br.com.internetbanking.dto.DepositoBancario;
 import br.com.internetbanking.dto.HistoricoTransacaoDTO;
 import br.com.internetbanking.dto.SaqueConta;
+import br.com.internetbanking.enums.MovimentacaoBancaria;
 import br.com.internetbanking.repository.ClienteRepository;
+import br.com.internetbanking.repository.HistoricoTransacaoRepository;
 import br.com.internetbanking.service.ClienteService;
 
 @Service
 public class ClienteServiceImpl implements ClienteService {
 
-	private static final String TAXA_ZERO_VIRGULA_QUATRO_POR_CENTO = "0.4";
-	private static final String TAXA_UM_POR_CENTO = "1";
+	private static final String TAXA_ZERO_VIRGULA_QUATRO_POR_CENTO = "0.04";
+	private static final String TAXA_UM_POR_CENTO = "100";
 
 	@Autowired
 	private ClienteRepository clienteRepository;
+
+	@Autowired
+	private HistoricoTransacaoRepository historicoTransacaoRepository;
 
 	public void cadastrarCliente(ClienteDTO cliente) {
 
@@ -36,8 +41,14 @@ public class ClienteServiceImpl implements ClienteService {
 	public BigDecimal sacarValor(SaqueConta saqueConta, String numeroDaConta) {
 
 		BigDecimal saldoAtual = clienteRepository.consultarSaldo(numeroDaConta);
+		
 		BigDecimal valorDeSaque = new BigDecimal(saqueConta.getValorDeSaque());
 
+		long millis = System.currentTimeMillis();
+		Date date = new java.util.Date(millis);
+
+		HistoricoTransacaoDTO historicoTransacao = new HistoricoTransacaoDTO(date, MovimentacaoBancaria.SAQUE,
+				numeroDaConta);
 		if (valorDeSaque.intValue() <= 0 || saldoAtual.intValue() == 0
 				|| valorDeSaque.intValue() > saldoAtual.intValue()) {
 
@@ -51,6 +62,8 @@ public class ClienteServiceImpl implements ClienteService {
 
 			subtrairValorNoSaldoDaConta(valorDeSaque, numeroDaConta);
 
+			atualizarHistoricoTransacao(historicoTransacao);
+
 			return valorDeSaque;
 
 		}
@@ -60,10 +73,12 @@ public class ClienteServiceImpl implements ClienteService {
 			if (valorDeSaque.intValue() > 100 && valorDeSaque.intValue() <= 300) {
 
 				BigDecimal valorDeSaldoComSaque = saldoAtual.subtract(valorDeSaque);
-				BigDecimal taxaDeJuros = saldoAtual.multiply(new BigDecimal(TAXA_ZERO_VIRGULA_QUATRO_POR_CENTO));
-				BigDecimal saldoAtualizado = valorDeSaldoComSaque.subtract(taxaDeJuros);
+				BigDecimal valorTaxaJuros = valorDeSaldoComSaque.multiply(new BigDecimal("0.004"));
+				BigDecimal saldoAtualizado = valorDeSaldoComSaque.subtract(valorTaxaJuros);
 
 				clienteRepository.atualizarValorDoSaldo(saldoAtualizado, numeroDaConta);
+
+				atualizarHistoricoTransacao(historicoTransacao);
 
 				return valorDeSaque;
 
@@ -72,10 +87,12 @@ public class ClienteServiceImpl implements ClienteService {
 			if (valorDeSaque.intValue() > 300) {
 
 				BigDecimal valorDeSaldoComSaque = saldoAtual.subtract(valorDeSaque);
-				BigDecimal taxaDeJuros = saldoAtual.multiply(new BigDecimal(TAXA_UM_POR_CENTO));
-				BigDecimal saldoAtualizado = valorDeSaldoComSaque.subtract(taxaDeJuros);
+				BigDecimal valorTaxaJuros = valorDeSaldoComSaque.divide(new BigDecimal(TAXA_UM_POR_CENTO));
+				BigDecimal saldoAtualizado = valorDeSaldoComSaque.subtract(valorTaxaJuros);
 
 				clienteRepository.atualizarValorDoSaldo(saldoAtualizado, numeroDaConta);
+
+				atualizarHistoricoTransacao(historicoTransacao);
 
 			}
 
@@ -88,6 +105,12 @@ public class ClienteServiceImpl implements ClienteService {
 	}
 
 	public void depositarUmValor(DepositoBancario depositoBancario, String numeroDaConta) {
+
+		long millis = System.currentTimeMillis();
+		Date date = new java.util.Date(millis);
+		
+		HistoricoTransacaoDTO historicoTransacao = new HistoricoTransacaoDTO(date, MovimentacaoBancaria.DEPOSITO,
+				numeroDaConta);
 
 		BigDecimal valorDeposito = new BigDecimal(depositoBancario.getValorDoDeposito());
 
@@ -104,15 +127,18 @@ public class ClienteServiceImpl implements ClienteService {
 			cliente.setSaldo(saldoAtualizado);
 
 			clienteRepository.save(cliente);
+			
+			atualizarHistoricoTransacao(historicoTransacao);
+
 		}
 
 	}
 
 	@Override
-	public List<HistoricoTransacaoDTO> consultarHistoricoTransacoesMovimentacaoPorData(BigDecimal valorDeSaque,
-			String numeroDaConta, Date dataInicio, Date dataFim) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<HistoricoTransacaoDTO> consultarHistoricoTransacoesMovimentacaoPorData(String numeroDaConta,
+			Date dataInicio, Date dataFim) {
+
+		return historicoTransacaoRepository.consultarHistoricoDeTransacoes(numeroDaConta, dataInicio, dataFim);
 	}
 
 	private void subtrairValorNoSaldoDaConta(BigDecimal valorDeSaldoAtualizado, String numeroDaConta) {
@@ -124,6 +150,11 @@ public class ClienteServiceImpl implements ClienteService {
 		}
 
 		clienteRepository.atualizarValorDoSaldo(valorDeSaldoAtualizado, numeroDaConta);
+	}
+
+	private void atualizarHistoricoTransacao(HistoricoTransacaoDTO historicoTransacao) {
+
+		historicoTransacaoRepository.save(historicoTransacao);
 	}
 
 }

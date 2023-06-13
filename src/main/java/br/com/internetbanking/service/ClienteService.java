@@ -20,7 +20,6 @@ public interface ClienteService {
 	BigDecimal sacarValor(SaqueConta saqueConta, String numeroDaConta);
 	
 	List<HistoricoTransacaoDTO> consultarHistoricoTransacoesMovimentacaoPorData(
-			BigDecimal valorDeSaque, 
 			String numeroDaConta,
 			Date dataInicio,
 			Date dataFim);
