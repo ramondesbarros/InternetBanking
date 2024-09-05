@@ -1,12 +1,18 @@
 package com.internetbanking.service.impl;
 
 import com.internetbanking.dto.ClienteDTO;
+import com.internetbanking.dto.HistoricoTransacaoDTO;
+import com.internetbanking.enums.TipoMovimentacaoBancaria;
 import com.internetbanking.map.ClienteMap;
+import com.internetbanking.map.HistoricoTransacaoMap;
 import com.internetbanking.math.CalculadoraTaxa;
 
+import com.internetbanking.repository.HistoricoTransacaoRepository;
 import com.internetbanking.request.ClienteRequest;
 import com.internetbanking.request.DepositoContaCorrenteRequest;
+import com.internetbanking.request.HistoricoTransacaoRequest;
 import com.internetbanking.request.SacarValorResquest;
+import com.internetbanking.response.ClienteResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +22,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ClienteServiceImpl implements ClienteService {
@@ -27,10 +35,16 @@ public class ClienteServiceImpl implements ClienteService {
     private ClienteRepository clienteRepository;
 
     @Autowired
+    private HistoricoTransacaoRepository historicoTransacaoRepository;
+
+    @Autowired
     private CalculadoraTaxa calculadoraTaxa;
 
     @Autowired
     private ClienteMap map;
+
+    @Autowired
+    private HistoricoTransacaoMap historicoTransacaoMap;
 
 
     @Override
@@ -40,11 +54,16 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public List<ClienteDTO> retornarTodosClientesCadastrados() {
+    public List<ClienteResponse> retornarTodosClientesCadastrados() {
 
         List<ClienteDTO> listaCliente = clienteRepository.findAll();
 
-        return listaCliente;
+        List<ClienteResponse> listaClientesResponse = listaCliente.stream().map(c -> {
+
+            return new ClienteResponse(c.getNome(), c.getPlanoExclusive(), c.getSaldo());
+        }).collect(Collectors.toList());
+
+        return listaClientesResponse;
 
     }
 
@@ -68,6 +87,8 @@ public class ClienteServiceImpl implements ClienteService {
 
             clienteRepository.atualizarValorSaldo(valordoSaldoAtualizar, id);
 
+            criarHistoricoDeTransacao(id, TipoMovimentacaoBancaria.SAQUE, new BigDecimal(valorSaque.getValorSaque()));
+
         } catch (IllegalArgumentException e) {
 
             throw new IllegalArgumentException();
@@ -84,11 +105,24 @@ public class ClienteServiceImpl implements ClienteService {
         BigDecimal saldo = new BigDecimal(saldoAtual.toString()).add(valorDepositoString);
 
         clienteRepository.atualizarValorSaldo(saldo, id);
+
+        criarHistoricoDeTransacao(id, TipoMovimentacaoBancaria.DEPOSITO, new BigDecimal(valorDeposito.getValorDeposito()));
+
+    }
+
+    private void criarHistoricoDeTransacao(Long id, TipoMovimentacaoBancaria tipoMovimentacaoBancaria, BigDecimal valorDeposito)  {
+
+            historicoTransacaoRepository
+                    .save(historicoTransacaoMap
+                    .criarHistoricoTransacao(clienteRepository.getReferenceById(id),
+                            tipoMovimentacaoBancaria,
+            new BigDecimal(valorDeposito.toString())));
     }
 
     @Override
-    public void consultarHistoricoTransacoesMovimentacaoData() {
+    public void consultarHistoricoTransacoesMovimentacaoData(HistoricoTransacaoRequest historicoTransacaoRequest, Long id) {
 
+        List<HistoricoTransacaoDTO> historicosTransacao = historicoTransacaoRepository.consultaHistorico(historicoTransacaoRequest.getDataHistorico(), historicoTransacaoRequest.getId());
     }
 
     private void verificarValorSaqueDeposito() {

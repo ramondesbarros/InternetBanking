@@ -14,13 +14,11 @@ public class ClienteDTO {
         super();
     }
 
-    public ClienteDTO(Long id, String nome, Boolean planoExclusive, BigDecimal saldo, Date dataNascimento, Set<HistoricoTransacaoDTO> historicoTransacoes) {
-        this.id = id;
+    public ClienteDTO(String nome, Boolean planoExclusive,  Date dataNascimento) {
+
         this.nome = nome;
         this.planoExclusive = planoExclusive;
-        this.saldo = saldo;
         this.dataNascimento = dataNascimento;
-        this.historicoTransacoes = historicoTransacoes;
     }
 
     public ClienteDTO(String nome, Boolean planoExclusive, BigDecimal saldo, Date dataNascimento) {
@@ -44,6 +42,7 @@ public class ClienteDTO {
     @Column(name = "saldo", precision = 10, scale = 2)
     private BigDecimal saldo;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "data_nascimento")
     private Date dataNascimento;
 

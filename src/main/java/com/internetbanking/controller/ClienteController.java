@@ -3,9 +3,10 @@ package com.internetbanking.controller;
 import com.internetbanking.dto.ClienteDTO;
 import com.internetbanking.request.ClienteRequest;
 import com.internetbanking.request.DepositoContaCorrenteRequest;
+import com.internetbanking.request.HistoricoTransacaoRequest;
 import com.internetbanking.request.SacarValorResquest;
+import com.internetbanking.response.ClienteResponse;
 import com.internetbanking.service.ClienteService;
-import com.internetbanking.service.impl.ClienteServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +14,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -36,9 +36,9 @@ public class ClienteController {
 
     @RequestMapping("/listaclientes")
     @GetMapping
-    public ResponseEntity<List<ClienteDTO>> retornarTodosClientesCadastrados() {
+    public ResponseEntity<List<ClienteResponse>> retornarTodosClientesCadastrados() {
 
-        List<ClienteDTO> listaTodosClientes = clienteService.retornarTodosClientesCadastrados();
+        List<ClienteResponse> listaTodosClientes = clienteService.retornarTodosClientesCadastrados();
 
         return ResponseEntity.ok(listaTodosClientes);
     }
@@ -66,13 +66,18 @@ public class ClienteController {
 
     @RequestMapping("/depositarValor/{id}")
     @PostMapping
-    public void depositarValor(@RequestBody DepositoContaCorrenteRequest valorDeposito, @PathVariable("id") Long id) {
+    ResponseEntity<String> depositarValor(@RequestBody DepositoContaCorrenteRequest valorDeposito, @PathVariable("id") Long id) {
 
         clienteService.depositarValor(valorDeposito, id);
+        return new ResponseEntity<>("Dposito efetuado com sucesso!", HttpStatus.CREATED);
     }
 
     //TODO
-    public void consultarHistoricoTransacoesMovimentacaoData() {
+    @GetMapping("/consultarHistorico/{id}")
+    public void consultarHistoricoTransacoesMovimentacaoData(@RequestBody HistoricoTransacaoRequest historicoTransacaoRequest, @PathVariable("id") Long id) {
+
+
+        clienteService.consultarHistoricoTransacoesMovimentacaoData(historicoTransacaoRequest, id);
 
     }
 }

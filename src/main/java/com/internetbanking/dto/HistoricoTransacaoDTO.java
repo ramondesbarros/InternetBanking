@@ -17,6 +17,13 @@ public class HistoricoTransacaoDTO {
         this.cliente = cliente;
     }
 
+    public HistoricoTransacaoDTO(TipoMovimentacaoBancaria tipoMovimentacaoBancaria, String valor, Date dataTransacao, ClienteDTO cliente) {
+        this.tipoMovimentacaoBancaria = tipoMovimentacaoBancaria;
+        this.valor = valor;
+        this.dataTransacao = dataTransacao;
+        this.cliente = cliente;
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,6 +34,7 @@ public class HistoricoTransacaoDTO {
     @Column(name = "valor")
     private String valor;
 
+    @Temporal(TemporalType.DATE)
     @Column(name = "data_transacao")
     private Date dataTransacao;
 

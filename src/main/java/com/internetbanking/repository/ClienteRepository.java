@@ -22,7 +22,7 @@ public interface ClienteRepository extends JpaRepository<ClienteDTO, Long> {
 
     @Modifying(clearAutomatically = true)
     @Transactional
-    @Query(value = "UPDATE cliente c SET c.saldo = ?1 WHERE c.id = ?2", nativeQuery = true)
-    BigDecimal atualizarValorSaldo(BigDecimal saldo, Long id);
+    @Query(value = "UPDATE cliente c SET c.saldo = :saldo WHERE c.id = :id", nativeQuery = true)
+    void atualizarValorSaldo(@Param("saldo") BigDecimal saldo, @Param("id") Long id);
 
 }
