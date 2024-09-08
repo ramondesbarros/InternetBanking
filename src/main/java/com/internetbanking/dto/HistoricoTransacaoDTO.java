@@ -9,6 +9,10 @@ import java.util.Date;
 @Table(name = "historico_transacao")
 public class HistoricoTransacaoDTO {
 
+    public HistoricoTransacaoDTO () {
+        super();
+    }
+
     public HistoricoTransacaoDTO(Long id, TipoMovimentacaoBancaria tipoMovimentacaoBancaria, String valor, Date dataTransacao, ClienteDTO cliente) {
         this.id = id;
         this.tipoMovimentacaoBancaria = tipoMovimentacaoBancaria;
@@ -28,7 +32,8 @@ public class HistoricoTransacaoDTO {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "tipo_movimentacao_bancaria")
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_movimentacao_bancaria", columnDefinition = "ENUM('SAQUE', 'DEPOSITO')")
     private TipoMovimentacaoBancaria tipoMovimentacaoBancaria;
 
     @Column(name = "valor")

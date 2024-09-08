@@ -1,11 +1,13 @@
 package com.internetbanking.controller;
 
 import com.internetbanking.dto.ClienteDTO;
+import com.internetbanking.dto.HistoricoTransacaoDTO;
 import com.internetbanking.request.ClienteRequest;
 import com.internetbanking.request.DepositoContaCorrenteRequest;
 import com.internetbanking.request.HistoricoTransacaoRequest;
 import com.internetbanking.request.SacarValorResquest;
 import com.internetbanking.response.ClienteResponse;
+import com.internetbanking.response.HistoricoTransacaoResponse;
 import com.internetbanking.service.ClienteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,10 +76,12 @@ public class ClienteController {
 
     //TODO
     @GetMapping("/consultarHistorico/{id}")
-    public void consultarHistoricoTransacoesMovimentacaoData(@RequestBody HistoricoTransacaoRequest historicoTransacaoRequest, @PathVariable("id") Long id) {
+    public ResponseEntity<List<HistoricoTransacaoResponse>> consultarHistoricoTransacoesMovimentacaoData(@RequestBody HistoricoTransacaoRequest historicoTransacaoRequest, @PathVariable("id") Long id) {
 
 
-        clienteService.consultarHistoricoTransacoesMovimentacaoData(historicoTransacaoRequest, id);
+        List<HistoricoTransacaoResponse> listaHistoricoTrnsacao = clienteService.consultarHistoricoTransacoesMovimentacaoData(historicoTransacaoRequest, id);
+
+        return ResponseEntity.ok(listaHistoricoTrnsacao);
 
     }
 }

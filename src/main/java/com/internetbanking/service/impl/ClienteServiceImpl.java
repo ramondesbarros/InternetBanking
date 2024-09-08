@@ -13,6 +13,7 @@ import com.internetbanking.request.DepositoContaCorrenteRequest;
 import com.internetbanking.request.HistoricoTransacaoRequest;
 import com.internetbanking.request.SacarValorResquest;
 import com.internetbanking.response.ClienteResponse;
+import com.internetbanking.response.HistoricoTransacaoResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +23,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -120,9 +123,30 @@ public class ClienteServiceImpl implements ClienteService {
     }
 
     @Override
-    public void consultarHistoricoTransacoesMovimentacaoData(HistoricoTransacaoRequest historicoTransacaoRequest, Long id) {
+    public List<HistoricoTransacaoResponse> consultarHistoricoTransacoesMovimentacaoData(HistoricoTransacaoRequest historicoTransacaoRequest, Long id) {
 
-        List<HistoricoTransacaoDTO> historicosTransacao = historicoTransacaoRepository.consultaHistorico(historicoTransacaoRequest.getDataHistorico(), historicoTransacaoRequest.getId());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        String dataHistorico = historicoTransacaoRequest.getDataHistorico();
+
+
+        Date date;
+        try {
+            date = sdf.parse(dataHistorico);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        List<Object[]>  historicosTransacao = historicoTransacaoRepository.consultaHistorico(date, id);
+
+        System.out.println(historicosTransacao);
+
+        List<HistoricoTransacaoResponse> transacoes = historicosTransacao.stream().map(t -> {
+
+            return new HistoricoTransacaoResponse((Date) t[0], (String) t[1].toString(), new BigDecimal(t[2].toString()));
+        }).collect(Collectors.toList());
+
+        return transacoes;
     }
 
     private void verificarValorSaqueDeposito() {

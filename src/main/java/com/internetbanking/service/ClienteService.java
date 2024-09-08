@@ -1,11 +1,13 @@
 package com.internetbanking.service;
 
 import com.internetbanking.dto.ClienteDTO;
+import com.internetbanking.dto.HistoricoTransacaoDTO;
 import com.internetbanking.request.ClienteRequest;
 import com.internetbanking.request.DepositoContaCorrenteRequest;
 import com.internetbanking.request.HistoricoTransacaoRequest;
 import com.internetbanking.request.SacarValorResquest;
 import com.internetbanking.response.ClienteResponse;
+import com.internetbanking.response.HistoricoTransacaoResponse;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.math.BigDecimal;
@@ -21,6 +23,6 @@ public interface ClienteService {
 
     void depositarValor(DepositoContaCorrenteRequest valorDeposito, Long id);
 
-    void consultarHistoricoTransacoesMovimentacaoData(HistoricoTransacaoRequest historicoTransacaoRequest, Long id);
+    List<HistoricoTransacaoResponse> consultarHistoricoTransacoesMovimentacaoData(HistoricoTransacaoRequest historicoTransacaoRequest, Long id);
 
 }

@@ -13,8 +13,6 @@ public class HistoricoTransacaoMap {
 
     public HistoricoTransacaoDTO criarHistoricoTransacao(ClienteDTO clienteDTO, TipoMovimentacaoBancaria tipoMovimentacaoBancaria, BigDecimal valor) {
 
-
-
         return new HistoricoTransacaoDTO(tipoMovimentacaoBancaria,valor.toString(), new Date(), clienteDTO);
     }
 }
