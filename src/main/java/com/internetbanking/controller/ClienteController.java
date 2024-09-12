@@ -1,12 +1,11 @@
 package com.internetbanking.controller;
 
-import com.internetbanking.dto.ClienteDTO;
-import com.internetbanking.dto.HistoricoTransacaoDTO;
 import com.internetbanking.request.ClienteRequest;
 import com.internetbanking.request.DepositoContaCorrenteRequest;
 import com.internetbanking.request.HistoricoTransacaoRequest;
 import com.internetbanking.request.SacarValorResquest;
 import com.internetbanking.response.ClienteResponse;
+import com.internetbanking.response.ErrorResponse;
 import com.internetbanking.response.HistoricoTransacaoResponse;
 import com.internetbanking.service.ClienteService;
 import org.slf4j.Logger;
@@ -29,11 +28,24 @@ public class ClienteController {
 
     @RequestMapping("/cadastrar")
     @PostMapping
-    public ResponseEntity<String> cadastrarCliente(@RequestBody ClienteRequest request) {
+    public ResponseEntity<?> cadastrarCliente(@RequestBody ClienteRequest request) {
 
+        try {
+
+            clienteService.cadastrarCliente(request);
+            return new ResponseEntity<>("Cliente cadastrado", HttpStatus.CREATED);
+
+        } catch (Exception e ) {
+
+            LOGGER.info("Erro no cadastro do cliente.");
+
+        }
         clienteService.cadastrarCliente(request);
 
-        return new ResponseEntity<>("Cliente cadastrado", HttpStatus.CREATED);
+        ErrorResponse er = new ErrorResponse();
+        er.setMessage("Erro o cadastrar o cliente. Tente novamente mais tarde.");
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(er);
     }
 
     @RequestMapping("/listaclientes")
@@ -46,8 +58,8 @@ public class ClienteController {
     }
 
     @RequestMapping("/sacarValor/{id}")
-    @PutMapping
-    public ResponseEntity<String> sacarValor(@RequestBody SacarValorResquest valorSaque, @PathVariable("id") Long id) throws RuntimeException, IllegalArgumentException {
+    @PatchMapping
+    public ResponseEntity<?> sacarValor(@RequestBody SacarValorResquest valorSaque, @PathVariable("id") Long id) throws RuntimeException, IllegalArgumentException {
 
         try {
 
@@ -56,28 +68,43 @@ public class ClienteController {
         } catch (IllegalArgumentException i) {
 
             LOGGER.info("Valor do saque e taxa a cima so valor do saldo em conta corrente!\"");
-            return new ResponseEntity<>("Valor de saque e taxa a cima do valor de saldo de conta corrente", HttpStatus.BAD_REQUEST);
+
+            ErrorResponse er = new ErrorResponse();
+            er.setMessage("Valor do saque e taxa a cima so valor do saldo em conta corrente!");
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(er);
 
         } catch (RuntimeException e) {
 
             LOGGER.info("Valor do Saque maior que o do saldo bancario!");
         }
 
-        return new ResponseEntity<>("Valor do Saque maior que o do saldo bancario!", HttpStatus.BAD_REQUEST);
+        ErrorResponse er = new ErrorResponse();
+        er.setMessage("Valor do saque e taxa a cima so valor do saldo em conta corrente!");
+
+        return new ResponseEntity<>("Valor do saque e taxa a cima so valor do saldo em conta corrente!", HttpStatus.BAD_REQUEST);
     }
 
     @RequestMapping("/depositarValor/{id}")
-    @PostMapping
+    @PatchMapping
     ResponseEntity<String> depositarValor(@RequestBody DepositoContaCorrenteRequest valorDeposito, @PathVariable("id") Long id) {
 
+        try {
+
+            clienteService.depositarValor(valorDeposito, id);
+            return new ResponseEntity<>("Deposito efetuado com sucesso!", HttpStatus.CREATED);
+
+        } catch (Exception e) {
+
+            LOGGER.info("Erro ao realizar o deposito!");
+
+        }
         clienteService.depositarValor(valorDeposito, id);
-        return new ResponseEntity<>("Dposito efetuado com sucesso!", HttpStatus.CREATED);
+        return new ResponseEntity<>("Erro ao realizar o deposito!", HttpStatus.CREATED);
     }
 
-    //TODO
     @GetMapping("/consultarHistorico/{id}")
     public ResponseEntity<List<HistoricoTransacaoResponse>> consultarHistoricoTransacoesMovimentacaoData(@RequestBody HistoricoTransacaoRequest historicoTransacaoRequest, @PathVariable("id") Long id) {
-
 
         List<HistoricoTransacaoResponse> listaHistoricoTrnsacao = clienteService.consultarHistoricoTransacoesMovimentacaoData(historicoTransacaoRequest, id);
 

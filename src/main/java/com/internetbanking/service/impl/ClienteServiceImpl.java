@@ -1,11 +1,10 @@
 package com.internetbanking.service.impl;
 
 import com.internetbanking.dto.ClienteDTO;
-import com.internetbanking.dto.HistoricoTransacaoDTO;
 import com.internetbanking.enums.TipoMovimentacaoBancaria;
 import com.internetbanking.map.ClienteMap;
 import com.internetbanking.map.HistoricoTransacaoMap;
-import com.internetbanking.math.CalculadoraTaxa;
+import com.internetbanking.calc.CalculadoraTaxa;
 
 import com.internetbanking.repository.HistoricoTransacaoRepository;
 import com.internetbanking.request.ClienteRequest;

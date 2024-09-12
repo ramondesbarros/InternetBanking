@@ -1,4 +1,4 @@
-package com.internetbanking.math;
+package com.internetbanking.calc;
 
 import org.springframework.stereotype.Component;
 
